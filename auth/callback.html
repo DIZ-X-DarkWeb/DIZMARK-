@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIZMARK - Auth Callback</title>
+<style>
+  body { background: #0a0e27; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+  .loader { width: 60px; height: 60px; border: 5px solid #1a2560; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div style="text-align:center;">
+  <div class="loader" style="margin:0 auto 20px;"></div>
+  <p style="color:#93c5fd;">Memproses login...</p>
+</div>
+<script type="module">
+import { handleGitHubCallback } from './js/auth.js'
+
+const params = new URLSearchParams(window.location.search)
+const code = params.get('code')
+
+if (code) {
+  handleGitHubCallback(code)
+} else {
+  window.location.href = '/'
+}
+</script>
+</body>
+</html>

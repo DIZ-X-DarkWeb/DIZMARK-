@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMINDIZMARK</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          diz: {
+            900: '#0a0e27',
+            800: '#0f1740',
+            700: '#1a2560',
+            600: '#1e3a8a',
+            500: '#2563eb',
+            400: '#3b82f6',
+            300: '#60a5fa',
+          }
+        },
+        fontFamily: {
+          goldman: ['Goldman', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Goldman', sans-serif; }
+  body { background: linear-gradient(135deg, #0a0e27 0%, #0f1740 30%, #1a2560 60%, #0a0e27 100%); min-height: 100vh; color: white; }
+  .glass { background: rgba(15, 23, 64, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(37, 99, 235, 0.3); }
+  .glass-card { background: rgba(26, 37, 96, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(37, 99, 235, 0.4); }
+  .btn-diz { background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6); transition: all 0.3s; }
+  .btn-diz:hover { background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa); }
+  .btn-red { background: linear-gradient(135deg, #991b1b, #dc2626); }
+  .btn-red:hover { background: linear-gradient(135deg, #dc2626, #ef4444); }
+  .btn-yellow { background: linear-gradient(135deg, #92400e, #d97706); }
+  .btn-yellow:hover { background: linear-gradient(135deg, #d97706, #f59e0b); }
+  .btn-green { background: linear-gradient(135deg, #065f46, #059669); }
+  .btn-green:hover { background: linear-gradient(135deg, #059669, #10b981); }
+  .input-diz { background: rgba(15, 23, 64, 0.8); border: 1px solid rgba(37, 99, 235, 0.4); color: #bfdbfe; }
+  .input-diz:focus { border-color: #3b82f6; outline: none; }
+  .gradient-text { background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+<div id="login-screen" class="w-full max-w-md">
+  <div class="glass-card p-8 rounded-2xl">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold gradient-text mb-2">ADMINDIZMARK</h1>
+      <p class="text-blue-300">Masukkan password untuk mengakses panel admin</p>
+    </div>
+    
+    <div class="space-y-4">
+      <input type="password" id="admin-password" placeholder="Password" 
+             class="input-diz w-full p-4 rounded-xl text-lg text-center">
+      
+      <button onclick="loginAdmin()" class="btn-diz w-full py-4 rounded-xl text-xl font-bold">
+        MASUK
+      </button>
+      
+      <p id="login-error" class="text-red-400 text-center text-sm hidden"></p>
+    </div>
+  </div>
+</div>
+
+<div id="admin-panel" class="w-full max-w-6xl mx-auto hidden">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold gradient-text">ADMINDIZMARK</h1>
+    <button onclick="logoutAdmin()" class="btn-red px-6 py-3 rounded-xl font-bold">LOGOUT</button>
+  </div>
+  
+  <!-- Search User -->
+  <div class="glass-card p-4 rounded-xl mb-6 flex gap-4">
+    <input type="text" id="search-user" placeholder="Cari email atau username..." 
+           class="input-diz flex-1 p-3 rounded-lg">
+    <button onclick="searchUserAdmin()" class="btn-diz px-6 py-3 rounded-xl font-bold">CARI</button>
+  </div>
+  
+  <!-- User List -->
+  <div id="user-list" class="space-y-4 mb-8">
+    <p class="text-blue-300">Loading daftar pengguna...</p>
+  </div>
+  
+  <!-- Action Panel -->
+  <div id="action-panel" class="glass-card p-6 rounded-2xl hidden">
+    <h3 class="text-xl font-bold mb-4">Panel Aksi: <span id="target-user" class="text-blue-400"></span></h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- PRO Control -->
+      <div class="glass p-4 rounded-xl">
+        <h4 class="font-bold mb-3 text-green-400">KONTROL PRO</h4>
+        <div class="flex gap-2">
+          <button onclick="adminAction('pro-on')" class="btn-green flex-1 py-2 rounded-lg text-sm font-bold">PRO ON</button>
+          <button onclick="adminAction('pro-off')" class="btn-red flex-1 py-2 rounded-lg text-sm font-bold">PRO OFF</button>
+        </div>
+      </div>
+      
+      <!-- Ban Control -->
+      <div class="glass p-4 rounded-xl">
+        <h4 class="font-bold mb-3 text-red-400">KONTROL BAN</h4>
+        <div class="flex gap-2">
+          <button onclick="adminAction('ban')" class="btn-yellow flex-1 py-2 rounded-lg text-sm font-bold">BAN 3 HARI</button>
+          <button onclick="adminAction('unban')" class="btn-green flex-1 py-2 rounded-lg text-sm font-bold">UNBAN</button>
+        </div>
+      </div>
+      
+      <!-- Suspend Control -->
+      <div class="glass p-4 rounded-xl">
+        <h4 class="font-bold mb-3 text-orange-400">KONTROL SUSPEND</h4>
+        <div class="flex gap-2">
+          <button onclick="adminAction('suspend')" class="btn-yellow flex-1 py-2 rounded-lg text-sm font-bold">SUSPEND</button>
+          <button onclick="adminAction('unsuspend')" class="btn-green flex-1 py-2 rounded-lg text-sm font-bold">UNSUSPEND</button>
+        </div>
+      </div>
+      
+      <!-- Delete Control -->
+      <div class="glass p-4 rounded-xl">
+        <h4 class="font-bold mb-3 text-red-500">KONTROL HAPUS</h4>
+        <div class="flex gap-2">
+          <button onclick="adminAction('delete')" class="btn-red flex-1 py-2 rounded-lg text-sm font-bold">HAPUS PERMANEN</button>
+          <button onclick="adminAction('restore')" class="btn-green flex-1 py-2 rounded-lg text-sm font-bold">RESTORE</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Messages -->
+    <div class="glass p-4 rounded-xl mt-4">
+      <h4 class="font-bold mb-3">PESAN MASUK</h4>
+      <div id="user-messages" class="space-y-2 max-h-60 overflow-y-auto">
+        <p class="text-blue-300">Pilih user untuk lihat pesan</p>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <input type="text" id="reply-message" placeholder="Balas pesan..." 
+               class="input-diz flex-1 p-3 rounded-lg">
+        <button onclick="replyToUser()" class="btn-diz px-6 py-3 rounded-xl font-bold">KIRIM BALASAN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+const SUPABASE_URL = 'https://your-project.supabase.co'
+const SUPABASE_ANON_KEY = 'your-anon-key-here'
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+// Valid passwords
+const VALID_PASSWORDS = ['DIZX', 'DIZ', 'diz', 'dizx', 'Dizx', 'Diz']
+
+let selectedUser = null
+let failedAttempts = 0
+let lockoutUntil = null
+
+// ============================================
+// ADMIN LOGIN
+// ============================================
+window.loginAdmin = function() {
+  const password = document.getElementById('admin-password').value.trim()
+  const errorEl = document.getElementById('login-error')
+  
+  // Check lockout
+  if (lockoutUntil && new Date() < lockoutUntil) {
+    const remaining = Math.ceil((lockoutUntil - new Date()) / 1000)
+    errorEl.textContent = `Akses ditolak. Tunggu ${remaining} detik.`
+    errorEl.classList.remove('hidden')
+    return
+  }
+  
+  if (VALID_PASSWORDS.includes(password)) {
+    document.getElementById('login-screen').classList.add('hidden')
+    document.getElementById('admin-panel').classList.remove('hidden')
+    failedAttempts = 0
+    lockoutUntil = null
+    loadAllUsers()
+  } else {
+    failedAttempts++
+    errorEl.textContent = 'AKSES DITOLAK'
+    errorEl.classList.remove('hidden')
+    document.getElementById('admin-password').value = ''
+    
+    if (failedAttempts >= 1) {
+      lockoutUntil = new Date(Date.now() + 30 * 1000)
+      errorEl.textContent = 'AKSES DITOLAK. Tunggu 30 detik.'
+      
+      // Countdown
+      let countdown = 30
+      const interval = setInterval(() => {
+        countdown--
+        if (countdown <= 0) {
+          clearInterval(interval)
+          errorEl.classList.add('hidden')
+          lockoutUntil = null
+          failedAttempts = 0
+        } else {
+          errorEl.textContent = `AKSES DITOLAK. Tunggu ${countdown} detik.`
+        }
+      }, 1000)
+    }
+  }
+}
+
+// ============================================
+// LOGOUT ADMIN
+// ============================================
+window.logoutAdmin = function() {
+  document.getElementById('admin-panel').classList.add('hidden')
+  document.getElementById('login-screen').classList.remove('hidden')
+  document.getElementById('admin-password').value = ''
+  document.getElementById('login-error').classList.add('hidden')
+  selectedUser = null
+  document.getElementById('action-panel').classList.add('hidden')
+}
+
+// ============================================
+// LOAD ALL USERS
+// ============================================
+async function loadAllUsers() {
+  const { data: users } = await supabase.from('users').select('*').order('created_at', { ascending: false })
+  const list = document.getElementById('user-list')
+  
+  if (!users || users.length === 0) {
+    list.innerHTML = '<p class="text-blue-300">Belum ada pengguna</p>'
+    return
+  }
+  
+  window.allUsers = users
+  
+  list.innerHTML = users.map(u => `
+    <div class="glass-card p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-blue-600/20 transition"
+         onclick="selectUser('${u.id}')">
+      <div class="flex items-center gap-4">
+        <img src="${u.avatar_url || 'https://files.catbox.moe/pe25yl.png'}" 
+             alt="${u.username}" class="w-12 h-12 rounded-full object-cover">
+        <div>
+          <p class="font-bold">${u.full_name || 'No Name'} ${u.is_pro ? '<span class="text-yellow-400 text-xs">[PRO]</span>' : ''}</p>
+          <p class="text-sm text-blue-300">${u.email}</p>
+          <p class="text-xs text-blue-400">dizmark/${u.username || 'no-username'}</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        ${u.is_banned ? '<span class="text-red-400 text-xs px-2 py-1 bg-red-500/20 rounded">BANNED</span>' : ''}
+        ${u.is_suspended ? '<span class="text-orange-400 text-xs px-2 py-1 bg-orange-500/20 rounded">SUSPENDED</span>' : ''}
+        ${u.is_deleted ? '<span class="text-red-500 text-xs px-2 py-1 bg-red-500/20 rounded">DELETED</span>' : ''}
+      </div>
+    </div>
+  `).join('')
+}
+
+// ============================================
+// SELECT USER
+// ============================================
+window.selectUser = async function(userId) {
+  const user = window.allUsers.find(u => u.id === userId)
+  if (!user) return
+  
+  selectedUser = user
+  document.getElementById('target-user').textContent = user.email
+  document.getElementById('action-panel').classList.remove('hidden')
+  
+  // Load messages
+  const { data: messages } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('sender_email', user.email)
+    .order('created_at', { ascending: false })
+  
+  const msgContainer = document.getElementById('user-messages')
+  
+  if (!messages || messages.length === 0) {
+    msgContainer.innerHTML = '<p class="text-blue-300 text-sm">Tidak ada pesan</p>'
+  } else {
+    msgContainer.innerHTML = messages.map(m => `
+      <div class="glass p-3 rounded-lg">
+        <p class="text-xs text-blue-400">${new Date(m.created_at).toLocaleString()}</p>
+        <p class="text-sm text-blue-200">${m.message}</p>
+        ${m.reply ? `<p class="text-sm text-green-400 mt-1">Balasan: ${m.reply}</p>` : ''}
+      </div>
+    `).join('')
+  }
+  
+  // Scroll ke action panel
+  document.getElementById('action-panel').scrollIntoView({ behavior: 'smooth' })
+}
+
+// ============================================
+// ADMIN ACTION
+// ============================================
+window.adminAction = async function(action) {
+  if (!selectedUser) return
+  
+  const updates = {}
+  let logAction = ''
+  
+  switch(action) {
+    case 'pro-on':
+      updates.is_pro = true
+      updates.pro_expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      logAction = 'PRO ON (30 hari)'
+      break
+    case 'pro-off':
+      updates.is_pro = false
+      updates.pro_expiry = null
+      logAction = 'PRO OFF'
+      break
+    case 'ban':
+      updates.is_banned = true
+      updates.ban_type = 'ban'
+      updates.ban_until = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+      logAction = 'BAN 3 HARI'
+      break
+    case 'unban':
+      updates.is_banned = false
+      updates.ban_type = null
+      updates.ban_until = null
+      logAction = 'UNBAN'
+      break
+    case 'suspend':
+      updates.is_suspended = true
+      updates.ban_type = 'suspend'
+      logAction = 'SUSPEND PERMANEN'
+      break
+    case 'unsuspend':
+      updates.is_suspended = false
+      updates.ban_type = null
+      logAction = 'UNSUSPEND'
+      break
+    case 'delete':
+      if (!confirm('Yakin hapus permanen user ini?')) return
+      updates.is_deleted = true
+      updates.ban_type = 'delete'
+      logAction = 'HAPUS PERMANEN'
+      break
+    case 'restore':
+      updates.is_deleted = false
+      updates.is_banned = false
+      updates.is_suspended = false
+      updates.ban_type = null
+      updates.ban_until = null
+      logAction = 'RESTORE'
+      break
+  }
+  
+  const { error } = await supabase.from('users').update(updates).eq('id', selectedUser.id)
+  
+  if (error) {
+    alert('Gagal: ' + error.message)
+  } else {
+    // Log action
+    await supabase.from('admin_logs').insert({
+      action: logAction,
+      target_email: selectedUser.email,
+      admin_action: action,
+      created_at: new Date().toISOString()
+    })
+    
+    alert(`Berhasil: ${logAction} untuk ${selectedUser.email}`)
+    selectedUser = { ...selectedUser, ...updates }
+    window.allUsers = window.allUsers.map(u => u.id === selectedUser.id ? { ...u, ...updates } : u)
+    loadAllUsers()
+  }
+}
+
+// ============================================
+// SEARCH USER
+// ============================================
+window.searchUserAdmin = function() {
+  const query = document.getElementById('search-user').value.trim().toLowerCase()
+  if (!query) { loadAllUsers(); return }
+  
+  const filtered = window.allUsers.filter(u => 
+    u.email.toLowerCase().includes(query) || 
+    u.username?.toLowerCase().includes(query)
+  )
+  
+  const list = document.getElementById('user-list')
+  
+  if (filtered.length === 0) {
+    list.innerHTML = '<p class="text-blue-300">Tidak ditemukan</p>'
+    return
+  }
+  
+  list.innerHTML = filtered.map(u => `
+    <div class="glass-card p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-blue-600/20 transition"
+         onclick="selectUser('${u.id}')">
+      <div class="flex items-center gap-4">
+        <img src="${u.avatar_url || 'https://files.catbox.moe/pe25yl.png'}" 
+             alt="${u.username}" class="w-12 h-12 rounded-full object-cover">
+        <div>
+          <p class="font-bold">${u.full_name || 'No Name'}</p>
+          <p class="text-sm text-blue-300">${u.email}</p>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+// ============================================
+// REPLY TO USER
+// ============================================
+window.replyToUser = async function() {
+  if (!selectedUser) {
+    alert('Pilih user terlebih dahulu')
+    return
+  }
+  
+  const reply = document.getElementById('reply-message').value.trim()
+  if (!reply) {
+    alert('Isi pesan balasan')
+    return
+  }
+  
+  // Update message yang paling baru (belum dibalas)
+  const { data: messages } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('sender_email', selectedUser.email)
+    .is('reply', null)
+    .order('created_at', { ascending: false })
+    .limit(1)
+  
+  if (messages && messages.length > 0) {
+    await supabase.from('messages').update({
+      reply: reply,
+      replied_at: new Date().toISOString()
+    }).eq('id', messages[0].id)
+    
+    alert('Balasan terkirim ke ' + selectedUser.email)
+    document.getElementById('reply-message').value = ''
+    
+    // Refresh messages
+    window.selectUser(selectedUser.id)
+  } else {
+    alert('Tidak ada pesan yang perlu dibalas')
+  }
+}
+</script>
+</body>
+</html>
