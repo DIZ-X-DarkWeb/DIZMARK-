@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADMINDIZMARK</title>
+<title>ADMINDIZMARX</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -52,7 +52,7 @@
 <div id="login-screen" class="w-full max-w-md">
   <div class="glass-card p-8 rounded-2xl">
     <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold gradient-text mb-2">ADMINDIZMARK</h1>
+      <h1 class="text-3xl font-bold gradient-text mb-2">ADMINDIZMARX</h1>
       <p class="text-blue-300">Masukkan password untuk mengakses panel admin</p>
     </div>
     
@@ -71,7 +71,7 @@
 
 <div id="admin-panel" class="w-full max-w-6xl mx-auto hidden">
   <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold gradient-text">ADMINDIZMARK</h1>
+    <h1 class="text-3xl font-bold gradient-text">ADMINDIZMARX</h1>
     <button onclick="logoutAdmin()" class="btn-red px-6 py-3 rounded-xl font-bold">LOGOUT</button>
   </div>
   
@@ -236,12 +236,12 @@ async function loadAllUsers() {
     <div class="glass-card p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-blue-600/20 transition"
          onclick="selectUser('${u.id}')">
       <div class="flex items-center gap-4">
-        <img src="${u.avatar_url || 'https://files.catbox.moe/pe25yl.png'}" 
+        <img src="${u.avatar_url || 'https://files.catbox.moe/jxo3mr.png'}" 
              alt="${u.username}" class="w-12 h-12 rounded-full object-cover">
         <div>
           <p class="font-bold">${u.full_name || 'No Name'} ${u.is_pro ? '<span class="text-yellow-400 text-xs">[PRO]</span>' : ''}</p>
           <p class="text-sm text-blue-300">${u.email}</p>
-          <p class="text-xs text-blue-400">dizmark/${u.username || 'no-username'}</p>
+          <p class="text-xs text-blue-400">dizmarx/${u.username || 'no-username'}</p>
         </div>
       </div>
       <div class="flex gap-2">
@@ -390,7 +390,7 @@ window.searchUserAdmin = function() {
     <div class="glass-card p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-blue-600/20 transition"
          onclick="selectUser('${u.id}')">
       <div class="flex items-center gap-4">
-        <img src="${u.avatar_url || 'https://files.catbox.moe/pe25yl.png'}" 
+        <img src="${u.avatar_url || 'https://files.catbox.moe/jxo3mr.png'}" 
              alt="${u.username}" class="w-12 h-12 rounded-full object-cover">
         <div>
           <p class="font-bold">${u.full_name || 'No Name'}</p>
