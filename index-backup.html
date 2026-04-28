@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIZMARX - Platform Produk Digital</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          diz: {
+            900: '#0a0e27',
+            800: '#0f1740',
+            700: '#1a2560',
+            600: '#1e3a8a',
+            500: '#2563eb',
+            400: '#3b82f6',
+            300: '#60a5fa',
+            200: '#93c5fd',
+            100: '#bfdbfe',
+          }
+        },
+        fontFamily: {
+          goldman: ['Goldman', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Goldman', sans-serif; }
+  body { background: linear-gradient(135deg, #0a0e27 0%, #0f1740 30%, #1a2560 60%, #0a0e27 100%); min-height: 100vh; }
+  .glass { background: rgba(15, 23, 64, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(37, 99, 235, 0.3); }
+  .glass-card { background: rgba(26, 37, 96, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(37, 99, 235, 0.4); }
+  .btn-diz { background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6); transition: all 0.3s; }
+  .btn-diz:hover { background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa); transform: scale(1.02); box-shadow: 0 0 30px rgba(37, 99, 235, 0.5); }
+  .input-diz { background: rgba(15, 23, 64, 0.8); border: 1px solid rgba(37, 99, 235, 0.4); color: #bfdbfe; }
+  .input-diz:focus { border-color: #3b82f6; box-shadow: 0 0 20px rgba(37, 99, 235, 0.3); outline: none; }
+  .gradient-text { background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); } 50% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.8); } }
+  .price-cut { text-decoration: line-through; color: #ef4444; font-size: 0.85em; }
+  .animate-slide-in { animation: slideIn 0.5s ease-out; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body class="min-h-screen text-white">
+
+<div id="sidebar" class="sidebar fixed top-0 right-0 w-80 h-full bg-diz-800 z-50 transform translate-x-full shadow-2xl border-l border-blue-500/30">
+  <div class="p-6">
+    <div class="flex justify-between items-center mb-8">
+      <h3 class="text-xl gradient-text font-bold"><i class="fas fa-bars"></i></h3>
+      <button onclick="toggleSidebar()" class="text-3xl text-blue-300 hover:text-white">X</button>
+    </div>
+    <div class="space-y-4">
+      <a href="#upgrade" onclick="navigateTo('upgrade');toggleSidebar();" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg">UPGRADE</a>
+      <a href="#service" onclick="navigateTo('service');toggleSidebar();" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg">SERVICE</a>
+      <a href="#sign" onclick="navigateTo('sign');toggleSidebar();" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg">SIGN</a>
+    </div>
+  </div>
+</div>
+
+<header class="fixed top-0 w-full z-40 glass px-4 py-3">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-12 w-12 rounded-full object-cover">
+    <div class="flex items-center gap-4">
+      <div id="header-buttons" class="flex gap-3"></div>
+      <button onclick="toggleSidebar()" class="text-4xl text-blue-300 hover:text-white transition"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="main-content" class="pt-24 pb-16 px-4 max-w-7xl mx-auto">
+  <div id="dynamic-content"><div class="text-center py-16 animate-slide-in"><img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-32 w-32 mx-auto rounded-full mb-6"><h1 class="text-6xl md:text-8xl font-bold gradient-text mb-6">BUY ITEM</h1><p class="text-xl text-blue-300/80 mb-12">Buat project untuk dijual. Produk digital. Bagikan di media sosial dan dark web.</p><button onclick="navigateTo('sign')" class="btn-diz px-10 py-4 rounded-xl text-xl font-bold pulse">MULAI</button></div></div>
+</main>
+
+<footer class="glass border-t border-blue-500/20 py-8 px-4 mt-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col items-center gap-6">
+      <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-16 w-16 rounded-full">
+      <div class="flex gap-6">
+        <a href="https://vm.tiktok.com/ZS98d811wU23L-6JMzD" target="_blank" class="text-3xl hover:text-blue-400 transition"><i class="fab fa-tiktok"></i></a>
+        <a href="https://wa.me/6282122598130" target="_blank" class="text-3xl hover:text-green-400 transition"><i class="fab fa-whatsapp"></i></a>
+      </div>
+      <div class="flex flex-wrap justify-center gap-6 text-sm text-blue-300">
+        <span onclick="navigateTo('about')" class="cursor-pointer hover:text-white transition"> <i class="fas fa-info-circle"></i> About Us</span>
+        <span onclick="navigateTo('terms')" class="cursor-pointer hover:text-white transition">Terms & Conditions</span>
+        <span onclick="navigateTo('contact')" class="cursor-pointer hover:text-white transition"> <i class="fas fa-envelope"></i> Contact Us</span>
+        <span onclick="navigateTo('privacy')" class="cursor-pointer hover:text-white transition"><i class="fas fa-shield-alt"></i> Privacy</span>
+      </div>
+      <div class="flex flex-wrap justify-center gap-6 text-xs text-blue-400 mt-2">
+        <span onclick="navigateTo('privacy-policy')" class="cursor-pointer hover:text-white transition">Privacy Policy</span>
+        <span onclick="navigateTo('sitemap')" class="cursor-pointer hover:text-white transition">Sitemap</span>
+        <span onclick="navigateTo('terms-of-use')" class="cursor-pointer hover:text-white transition">Terms of Use</span>
+      </div>
+      <p class="text-blue-400 text-sm mt-4">Copyrights 2026 dizofficial</p>
+    </div>
+  </div>
+</footer>
+
+<div id="modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center" onclick="closeModal()">
+  <div id="modal-content" class="glass-card p-8 rounded-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()"></div>
+</div>
+
+<script type="module" src="js/supabase.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
