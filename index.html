@@ -88,7 +88,7 @@
 
 <header class="fixed top-0 w-full z-40 glass px-4 py-3">
   <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-12 w-12 rounded-full object-cover animate-glow">
+    <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-12 w-12 object-cover">
     <div class="flex items-center gap-4">
       <div id="header-buttons" class="flex gap-3">
         <button onclick="navigateTo('sign')" class="btn-diz px-6 py-2 rounded-xl pulse font-bold text-sm"><i class="fas fa-user-plus"></i> SIGN UP FREE</button>
@@ -148,6 +148,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <script>
+window.navigateTo = function(page) { window.location.hash = page; };
+window.toggleSidebar = function() { var s = document.getElementById("sidebar"); if (s.style.transform === "translateX(0px)") { s.style.transform = "translateX(100%)"; } else { s.style.transform = "translateX(0px)"; } };
+window.searchUrl = function() { var u = document.getElementById("search-url").value.trim(); if (u) { window.location.hash = "view/" + u; } };
+window.closeModal = function() { document.getElementById("modal-overlay").classList.add("hidden"); };
 particlesJS('particles-js', {
   particles: {
     number: { value: 80, density: { enable: true, value_area: 800 } },
@@ -166,42 +170,10 @@ particlesJS('particles-js', {
   retina_detect: true
 });
 
-window.toggleSidebar = function() {
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar.style.transform === 'translateX(0px)') {
-    sidebar.style.transform = 'translateX(100%)';
-  } else {
-    sidebar.style.transform = 'translateX(0px)';
-  }
-};
 
-window.navigateTo = function(page) {
-  if (page === 'sign') {
-    window.location.hash = 'sign';
-  } else if (page === 'upgrade') {
-    window.location.hash = 'upgrade';
-  } else if (page === 'service') {
-    window.location.hash = 'about';
-  } else {
-    window.location.hash = page;
-  }
-};
 
-window.searchUrl = function() {
-  const username = document.getElementById('search-url')?.value?.trim();
-  if (username) {
-    window.location.hash = 'view/' + username;
-  }
-};
 
-window.closeModal = function() {
-  document.getElementById('modal-overlay').classList.add('hidden');
-};
 
-window.showModal = function(content, title) {
-  document.getElementById('modal-content').innerHTML = '<div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold gradient-text">' + title + '</h3><button onclick="closeModal()" class="text-3xl text-blue-300 hover:text-white"><i class="fas fa-times"></i></button></div>' + content;
-  document.getElementById('modal-overlay').classList.remove('hidden');
-};
 </script>
 
 <script type="module" src="js/supabase.js"></script>
