@@ -121,7 +121,7 @@ async function processGoogleUser(userData) {
 }
 
 export async function loginWithGitHub() {
-  const GITHUB_CLIENT_ID = 'Ov23li...'
+  const GITHUB_CLIENT_ID = "Ov23liv2pk518ZnxHGpI"
   const redirectUri = window.location.origin + '/auth/callback'
   const githubUrl = 'https://github.com/login/oauth/authorize?client_id=' + GITHUB_CLIENT_ID + '&redirect_uri=' + redirectUri + '&scope=user:email'
   window.location.href = githubUrl
@@ -134,7 +134,7 @@ export async function handleGitHubCallback(code) {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         client_id: 'Ov23li...',
-        client_secret: 'github_client_secret_lu',
+        client_secret: "fa7d006bede2a158d3112aced49c3855846269db"
         code: code
       })
     })
