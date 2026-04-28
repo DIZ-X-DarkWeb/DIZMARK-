@@ -1,4 +1,4 @@
-import { supabase, getUserProducts, getAllMarketProducts, getProductById, createProduct, updateProduct, deleteProduct, addToCart, getCartItems, removeFromCart, createPurchase, sendMessage } from './supabase.js'
+import { db, storage, getUserProducts, getAllMarketProducts, getProductById, createProduct, updateProduct, deleteProduct, addToCart, getCartItems, removeFromCart, createPurchase, sendMessage } from './firebase.js'
 import { getCurrentUser, logout, loginManual, loginWithGoogle, loginWithGitHub, registerManual, forgotPassword, verifyOTPAndReset } from './auth.js'
 
 let currentUser = null
@@ -185,11 +185,11 @@ window.handleCompleteProfile = async function(userId) {
     updates.password_hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
   }
   
-  const { error } = await supabase.from('users').update(updates).eq('id', userId)
+  const { error } = await db('users').update(updates).eq('id', userId)
   if (error) { showNotification('Gagal: ' + error.message, 'error'); return }
   
   localStorage.removeItem('dizmarx_temp_user')
-  const { data: user } = await supabase.from('users').select('*').eq('id', userId).single()
+  const { data: user } = await db('users').select('*').eq('id', userId).single()
   localStorage.setItem('dizmarx_user', JSON.stringify(user))
   currentUser = user
   setupHeader()
@@ -218,7 +218,7 @@ async function loadDashboardProducts() {
 }
 
 window.loadNotifications = async function() {
-  const { data: messages } = await supabase.from('messages').select('*').eq('sender_email', currentUser.email).order('created_at', { ascending: false })
+  const { data: messages } = await db('messages').select('*').eq('sender_email', currentUser.email).order('created_at', { ascending: false })
   let html = ''
   if (messages && messages.length > 0) {
     html = messages.map(m => '<div class="glass-card p-4 rounded-xl mb-3"><p class="text-xs text-blue-400">' + new Date(m.created_at).toLocaleString() + '</p><p class="text-sm text-blue-200">Pesan: ' + m.message + '</p>' + (m.reply ? '<p class="text-sm text-green-400 mt-1">Balasan: ' + m.reply + '</p>' : '<p class="text-xs text-yellow-400">Menunggu balasan...</p>') + '</div>').join('')
@@ -260,7 +260,7 @@ window.filterMarket = function() {
 function renderProductDetail(container, productId) {
   getProductById(productId).then(({ data: p }) => {
     if (!p) { container.innerHTML = '<p class="text-center py-20 text-red-400">Produk tidak ditemukan</p>'; return }
-    supabase.rpc('increment_views', { product_id: productId })
+    db('increment_views', { product_id: productId })
     const images = [p.thumbnail_url, ...(p.images || [])].filter(Boolean)
     container.innerHTML = '<div class="animate-slide-in max-w-5xl mx-auto"><button onclick="navigateTo(\'market\')" class="text-blue-400 hover:text-white mb-6">Kembali ke Market</button><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><div class="glass-card rounded-2xl overflow-hidden h-96"><img src="' + (images[0] || 'https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png') + '" id="main-img" class="w-full h-full object-cover" onerror="this.src=\'https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png\'"></div>' + (images.length > 1 ? '<div class="flex gap-2 mt-2 overflow-x-auto">' + images.map((img, i) => '<img src="' + img + '" onclick="document.getElementById(\'main-img\').src=\'' + img + '\'" class="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 ' + (i === 0 ? 'border-blue-500' : 'border-transparent') + '" onerror="this.src=\'https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png\'">').join('') + '</div>' : '') + '</div><div class="space-y-4"><h1 class="text-3xl font-bold gradient-text">' + p.title + '</h1><div class="glass-card p-4 rounded-xl"><span class="text-3xl font-bold ' + (p.is_free ? 'text-green-400' : 'text-blue-400') + '">' + (p.is_free ? 'FREE' : 'Rp' + (p.discount_price || p.price)?.toLocaleString()) + '</span>' + (p.discount_price ? '<span class="price-cut text-lg ml-3">Rp' + p.price.toLocaleString() + '</span>' : '') + '</div><div class="glass-card p-4 rounded-xl"><h4 class="font-bold mb-3">Deskripsi</h4><p class="text-blue-200 whitespace-pre-wrap">' + (p.description || 'Tidak ada deskripsi') + '</p></div><button onclick="orderProduct(\'' + p.id + '\')" class="btn-diz w-full py-4 rounded-xl text-lg font-bold pulse">' + (p.is_free ? 'DAPATKAN GRATIS' : 'ORDER SEKARANG') + '</button></div></div></div>'
   })
@@ -271,7 +271,7 @@ window.orderProduct = async function(productId) {
   const { data: p } = await getProductById(productId)
   if (p.is_free) {
     await createPurchase({ product_id: productId, buyer_id: currentUser.id })
-    supabase.rpc('increment_purchase', { product_id: productId })
+    db('increment_purchase', { product_id: productId })
     showNotification('Produk gratis berhasil diklaim', 'success')
   } else {
     if (p.users?.phone) window.open('https://wa.me/' + p.users.phone.replace(/\+/g, '') + '?text=Halo%20saya%20ingin%20membeli%20' + encodeURIComponent(p.title), '_blank')
@@ -343,20 +343,20 @@ window.submitProduct = async function() {
   try {
     const thumbFile = window.uploadedThumbnail
     const thumbName = 'thumbnails/' + currentUser.id + '/' + Date.now() + '_' + thumbFile.name
-    await supabase.storage.from('products').upload(thumbName, thumbFile)
-    thumbUrl = supabase.storage.from('products').getPublicUrl(thumbName).data.publicUrl
+    await storage.from('products').upload(thumbName, thumbFile)
+    thumbUrl = storage.from('products').getPublicUrl(thumbName).data.publicUrl
     
     for (const img of window.uploadedImages) {
       const imgName = 'images/' + currentUser.id + '/' + Date.now() + '_' + img.name
-      await supabase.storage.from('products').upload(imgName, img)
-      imageUrls.push(supabase.storage.from('products').getPublicUrl(imgName).data.publicUrl)
+      await storage.from('products').upload(imgName, img)
+      imageUrls.push(storage.from('products').getPublicUrl(imgName).data.publicUrl)
     }
     
     const prodFile = document.getElementById('prod-file')?.files[0]
     if (prodFile) {
       const fileName = 'files/' + currentUser.id + '/' + Date.now() + '_' + prodFile.name
-      await supabase.storage.from('products').upload(fileName, prodFile)
-      fileUrl = supabase.storage.from('products').getPublicUrl(fileName).data.publicUrl
+      await storage.from('products').upload(fileName, prodFile)
+      fileUrl = storage.from('products').getPublicUrl(fileName).data.publicUrl
     }
   } catch(err) {
     showNotification('Upload gagal: ' + err.message, 'error'); return
@@ -420,9 +420,9 @@ window.deleteProductConfirm = function(productId) {
 
 // VIEW PAGE
 function renderViewPage(container, username) {
-  supabase.from('users').select('*').eq('username', username).single().then(({ data: user }) => {
+  db('users').select('*').eq('username', username).single().then(({ data: user }) => {
     if (!user) { container.innerHTML = '<p class="text-center py-20 text-blue-300">User tidak ditemukan</p>'; return }
-    supabase.from('products').select('*').eq('user_id', user.id).eq('is_active', true).order('created_at', { ascending: false }).then(({ data: products }) => {
+    db('products').select('*').eq('user_id', user.id).eq('is_active', true).order('created_at', { ascending: false }).then(({ data: products }) => {
       container.innerHTML = '<div class="animate-slide-in max-w-4xl mx-auto"><div class="h-64 rounded-2xl overflow-hidden mb-4 bg-diz-700">' + (user.cover_url ? '<img src="' + user.cover_url + '" class="w-full h-full object-cover">' : '<div class="w-full h-full bg-gradient-to-r from-diz-600 to-diz-800"></div>') + '</div><div class="glass-card p-6 rounded-2xl -mt-20 relative z-10 mx-4 mb-8"><div class="flex flex-col md:flex-row items-center gap-6"><img src="' + (user.avatar_url || 'https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png') + '" class="w-32 h-32 rounded-full object-cover border-4 border-diz-800 -mt-20"><div class="text-center md:text-left"><h1 class="text-3xl font-bold gradient-text">' + (user.full_name || user.username) + '</h1><p class="text-blue-300 text-lg">dizmarx/' + user.username + '</p><p class="text-blue-200 mt-2">' + (user.bio || 'Tidak ada bio') + '</p></div></div>' + (user.phone ? '<div class="mt-4 text-center"><a href="https://wa.me/' + user.phone.replace(/\+/g, '') + '" target="_blank" class="btn-diz px-8 py-3 rounded-xl inline-block"><i class="fab fa-whatsapp"></i></a></div>' : '') + '</div><h3 class="text-2xl font-bold gradient-text mb-6">Produk</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-6">' + (products && products.length > 0 ? products.map(p => '<div class="glass-card rounded-2xl overflow-hidden cursor-pointer" onclick="navigateTo(\'product-detail\', { productId: \'' + p.id + '\' })"><img src="' + (p.thumbnail_url || 'https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png') + '" class="w-full h-48 object-cover" onerror="this.src=\'https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png\'"><div class="p-4"><h4 class="font-bold truncate">' + p.title + '</h4><p class="text-blue-400 font-bold mt-2">' + (p.is_free ? 'FREE' : 'Rp' + (p.discount_price || p.price)?.toLocaleString()) + '</p></div></div>').join('') : '<p class="text-blue-300 col-span-full text-center py-8">Belum ada produk</p>') + '</div></div>'
     })
   })
@@ -514,7 +514,7 @@ async function loadStats() {
   let revenue = 0
   for (const p of products) {
     if (!p.is_free) {
-      const { data: pur } = await supabase.from('purchases').select('id').eq('product_id', p.id)
+      const { data: pur } = await db('purchases').select('id').eq('product_id', p.id)
       revenue += (pur?.length || 0) * (p.discount_price || p.price || 0)
     }
   }
@@ -543,10 +543,10 @@ window.saveProfile = async function() {
   const updates = { full_name: document.getElementById('pf-name')?.value, bio: document.getElementById('pf-bio')?.value }
   if (window.newCover) {
     const fn = 'covers/' + currentUser.id + '_' + Date.now()
-    await supabase.storage.from('users').upload(fn, window.newCover)
-    updates.cover_url = supabase.storage.from('users').getPublicUrl(fn).data.publicUrl
+    await storage.from('users').upload(fn, window.newCover)
+    updates.cover_url = storage.from('users').getPublicUrl(fn).data.publicUrl
   }
-  await supabase.from('users').update(updates).eq('id', currentUser.id)
+  await db('users').update(updates).eq('id', currentUser.id)
   currentUser = { ...currentUser, ...updates }
   localStorage.setItem('dizmarx_user', JSON.stringify(currentUser))
   showNotification('Profil disimpan', 'success')
