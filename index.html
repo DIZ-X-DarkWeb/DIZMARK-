@@ -13,15 +13,15 @@
       extend: {
         colors: {
           diz: {
-            900: '#0a0e27',
-            800: '#0f1740',
-            700: '#1a2560',
-            600: '#1e3a8a',
-            500: '#2563eb',
-            400: '#3b82f6',
-            300: '#60a5fa',
-            200: '#93c5fd',
-            100: '#bfdbfe',
+            900: '#050a1f',
+            800: '#0a1030',
+            700: '#0f1745',
+            600: '#15205a',
+            500: '#1a2d7a',
+            400: '#2040a0',
+            300: '#3b6df0',
+            200: '#6090ff',
+            100: '#90b8ff',
           }
         },
         fontFamily: {
@@ -34,64 +34,68 @@
 <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * { font-family: 'Goldman', sans-serif; }
-  body { background: linear-gradient(135deg, #0a0e27 0%, #0f1740 30%, #1a2560 60%, #0a0e27 100%); min-height: 100vh; }
-  .glass { background: rgba(15, 23, 64, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(37, 99, 235, 0.3); }
-  .glass-card { background: rgba(26, 37, 96, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(37, 99, 235, 0.4); }
-  .btn-diz { background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6); transition: all 0.3s; }
-  .btn-diz:hover { background: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa); transform: scale(1.02); box-shadow: 0 0 30px rgba(37, 99, 235, 0.5); }
-  .input-diz { background: rgba(15, 23, 64, 0.8); border: 1px solid rgba(37, 99, 235, 0.4); color: #bfdbfe; }
-  .input-diz:focus { border-color: #3b82f6; box-shadow: 0 0 20px rgba(37, 99, 235, 0.3); outline: none; }
-  .gradient-text { background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  body { background: #050a1f; min-height: 100vh; overflow-x: hidden; }
+  #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+  .content-wrap { position: relative; z-index: 1; }
+  .glass { background: rgba(10, 16, 48, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(32, 64, 160, 0.3); }
+  .glass-card { background: rgba(15, 23, 69, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(32, 64, 160, 0.4); }
+  .btn-diz { background: linear-gradient(135deg, #15205a, #1a2d7a, #2040a0); transition: all 0.3s; }
+  .btn-diz:hover { background: linear-gradient(135deg, #1a2d7a, #2040a0, #3b6df0); transform: scale(1.02); box-shadow: 0 0 30px rgba(32, 64, 160, 0.5); }
+  .input-diz { background: rgba(10, 16, 48, 0.8); border: 1px solid rgba(32, 64, 160, 0.4); color: #90b8ff; }
+  .input-diz:focus { border-color: #3b6df0; box-shadow: 0 0 20px rgba(59, 109, 240, 0.3); outline: none; }
+  .gradient-text { background: linear-gradient(135deg, #6090ff, #90b8ff, #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
   .pulse { animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); } 50% { box-shadow: 0 0 40px rgba(37, 99, 235, 0.8); } }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px rgba(32, 64, 160, 0.4); } 50% { box-shadow: 0 0 40px rgba(59, 109, 240, 0.8); } }
   .price-cut { text-decoration: line-through; color: #ef4444; font-size: 0.85em; }
   .animate-slide-in { animation: slideIn 0.5s ease-out; }
   @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body class="min-h-screen text-white">
+<div id="particles-js"></div>
+<div class="content-wrap">
 
 <div id="sidebar" class="sidebar fixed top-0 right-0 w-80 h-full bg-diz-800 z-50 transform translate-x-full shadow-2xl border-l border-blue-500/30">
   <div class="p-6">
     <div class="flex justify-between items-center mb-8">
-      <h3 class="text-xl gradient-text font-bold"><i class="fas fa-bars"></i></h3>
-      <button onclick="toggleSidebar()" class="text-3xl text-blue-300 hover:text-white">X</button>
+      <h3 class="text-xl gradient-text font-bold"><i class="fas fa-bars"></i> MENU</h3>
+      <button onclick="toggleSidebar()" class="text-3xl text-blue-300 hover:text-white"><i class="fas fa-times"></i></button>
     </div>
     <div class="space-y-4">
-      <a href="#upgrade" onclick="navigateTo('upgrade');toggleSidebar();" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg">UPGRADE</a>
-      <a href="#service" onclick="navigateTo('service');toggleSidebar();" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg">SERVICE</a>
-      <a href="#sign" onclick="navigateTo('sign');toggleSidebar();" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg">SIGN</a>
+      <a href="#upgrade" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg" onclick="navigateTo('upgrade');toggleSidebar();"><i class="fas fa-crown"></i> UPGRADE</a>
+      <a href="#service" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg" onclick="navigateTo('about');toggleSidebar();"><i class="fas fa-tools"></i> SERVICE</a>
+      <a href="#sign" class="block glass-card p-4 rounded-xl hover:bg-blue-600/30 transition text-center text-lg" onclick="navigateTo('sign');toggleSidebar();"><i class="fas fa-user-plus"></i> SIGN</a>
     </div>
   </div>
 </div>
 
 <header class="fixed top-0 w-full z-40 glass px-4 py-3">
   <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-12 w-12 rounded-full object-cover">
+    <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" style="height:48px; width:48px; object-fit:cover; border-radius:0;">
     <div class="flex items-center gap-4">
       <div id="header-buttons" class="flex gap-3"></div>
-      <button onclick="toggleSidebar()" class="text-4xl text-blue-300 hover:text-white transition"><i class="fas fa-bars"></i></button>
+      <button onclick="toggleSidebar()" class="text-3xl text-blue-300 hover:text-white transition"><i class="fas fa-bars"></i></button>
     </div>
   </div>
 </header>
 
 <main id="main-content" class="pt-24 pb-16 px-4 max-w-7xl mx-auto">
-  <div id="dynamic-content"><div class="text-center py-16 animate-slide-in"><img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-32 w-32 mx-auto rounded-full mb-6"><h1 class="text-6xl md:text-8xl font-bold gradient-text mb-6">BUY ITEM</h1><p class="text-xl text-blue-300/80 mb-12">Buat project untuk dijual. Produk digital. Bagikan di media sosial dan dark web.</p><button onclick="navigateTo('sign')" class="btn-diz px-10 py-4 rounded-xl text-xl font-bold pulse">MULAI</button></div></div>
+  <div id="dynamic-content"></div>
 </main>
 
 <footer class="glass border-t border-blue-500/20 py-8 px-4 mt-16">
   <div class="max-w-7xl mx-auto">
     <div class="flex flex-col items-center gap-6">
-      <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" class="h-16 w-16 rounded-full">
-      <div class="flex gap-6">
-        <a href="https://vm.tiktok.com/ZS98d811wU23L-6JMzD" target="_blank" class="text-3xl hover:text-blue-400 transition"><i class="fab fa-tiktok"></i></a>
-        <a href="https://wa.me/6282122598130" target="_blank" class="text-3xl hover:text-green-400 transition"><i class="fab fa-whatsapp"></i></a>
+      <img src="https://i.ibb.co.com/ZRNQBwrV/IMG-20260428-153620.png" alt="DIZMARX" style="height:64px; width:64px; object-fit:cover; border-radius:0;">
+      <div class="flex gap-6 text-3xl">
+        <a href="https://vm.tiktok.com/ZS98d811wU23L-6JMzD" target="_blank" class="text-white hover:text-blue-400 transition"><i class="fab fa-tiktok"></i></a>
+        <a href="https://wa.me/6282122598130" target="_blank" class="text-white hover:text-green-400 transition"><i class="fab fa-whatsapp"></i></a>
       </div>
       <div class="flex flex-wrap justify-center gap-6 text-sm text-blue-300">
-        <span onclick="navigateTo('about')" class="cursor-pointer hover:text-white transition"> <i class="fas fa-info-circle"></i> About Us</span>
-        <span onclick="navigateTo('terms')" class="cursor-pointer hover:text-white transition">Terms & Conditions</span>
-        <span onclick="navigateTo('contact')" class="cursor-pointer hover:text-white transition"> <i class="fas fa-envelope"></i> Contact Us</span>
+        <span onclick="navigateTo('about')" class="cursor-pointer hover:text-white transition"><i class="fas fa-info-circle"></i> About Us</span>
+        <span onclick="navigateTo('terms')" class="cursor-pointer hover:text-white transition"><i class="fas fa-file-contract"></i> Terms & Conditions</span>
+        <span onclick="navigateTo('contact')" class="cursor-pointer hover:text-white transition"><i class="fas fa-envelope"></i> Contact Us</span>
         <span onclick="navigateTo('privacy')" class="cursor-pointer hover:text-white transition"><i class="fas fa-shield-alt"></i> Privacy</span>
       </div>
       <div class="flex flex-wrap justify-center gap-6 text-xs text-blue-400 mt-2">
@@ -104,9 +108,28 @@
   </div>
 </footer>
 
-<div id="modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center" onclick="closeModal()">
-  <div id="modal-content" class="glass-card p-8 rounded-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()"></div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+particlesJS('particles-js', {
+  particles: {
+    number: { value: 80, density: { enable: true, value_area: 800 } },
+    color: { value: '#3b6df0' },
+    shape: { type: 'circle' },
+    opacity: { value: 0.5, random: true },
+    size: { value: 3, random: true },
+    line_linked: { enable: true, distance: 150, color: '#2040a0', opacity: 0.3, width: 1 },
+    move: { enable: true, speed: 1.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+  },
+  interactivity: {
+    detect_on: 'canvas',
+    events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true },
+    modes: { grab: { distance: 140, line_linked: { opacity: 0.8 } }, push: { particles_nb: 4 } }
+  },
+  retina_detect: true
+});
+</script>
 
 <script type="module" src="js/supabase.js"></script>
 <script type="module" src="js/auth.js"></script>
